@@ -29,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $errors['due_date'] = '日付が変更されてません';
   }
 
+  
   if (empty($errors)){
   $sql = "update plans set title = :title, " . "due_date = :due_date where id = :id";
   $stmt = $dbh->prepare($sql);
