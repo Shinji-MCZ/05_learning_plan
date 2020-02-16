@@ -14,29 +14,26 @@ $stmt->execute();
 
 $plans = $stmt->fetch(PDO::FETCH_ASSOC);
 
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  
-  $title = $_POST['title'];
-  $due_date = $_POST['due_date'];
 
-  $errors = [];
-
-  if ($title === $plans['title']) {
-    $errors['title'] = '学習内容が変更されてません';
-  }
-
-  if ($due_date === $plans['due_date']) {
-    $errors['due_date'] = '期限が変更されてません';
-  }
-
-  if (empty($errors)){
-  $sql = "update plans set title = :title, " . "due_date = :due_date where id = :id";
-  $stmt = $dbh->prepare($sql);
-  $stmt->bindParam(":title", $title);
-  $stmt->bindParam(":due_date", $due_date);
-  $stmt->bindParam(":id", $id);
-  $stmt->execute();
-  }
+$title = $_POST['title'];
+$due_date = $_POST['due_date'];
+$errors = [];
+if ($title === $plans['title']) {
+$errors['title'] = '学習内容が変更されてません';
+}
+if ($due_date === $plans['due_date']) {
+$errors['due_date'] = '期限が変更されてません';
+}
+if (empty($errors)){
+$sql = "update plans set title = :title, " . "due_date = :due_date where id = :id";
+$stmt = $dbh->prepare($sql);
+$stmt->bindParam(":title", $title);
+$stmt->bindParam(":due_date", $due_date);
+$stmt->bindParam(":id", $id);
+$stmt->execute();
+}
 }
 ?>
 <!DOCTYPE html>
