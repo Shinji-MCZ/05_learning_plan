@@ -12,7 +12,7 @@ $stmt = $dbh->prepare($sql);
 $stmt->bindParam(":id", $id);
 $stmt->execute();
 
-$post = $stmt->fetch(PDO::FETCH_ASSOC);
+$plans = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   
@@ -22,14 +22,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $errors = [];
 
   if ($title === $plans['title']) {
-    $errors['title'] = 'タスク名が変更されてません';
+    $errors['title'] = '学習内容が変更されてません';
   }
 
   if ($due_date === $plans['due_date']) {
-    $errors['due_date'] = '日付が変更されてません';
+    $errors['due_date'] = '期限が変更されてません';
   }
 
-  
   if (empty($errors)){
   $sql = "update plans set title = :title, " . "due_date = :due_date where id = :id";
   $stmt = $dbh->prepare($sql);
@@ -54,19 +53,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <?php if ($errors) : ?>
     <ul class="expired">
       <?php foreach ($errors as $error) : ?>
-        <li>
-          <?php echo h($error); ?>
-        </li>
+      <li>
+        <?php echo h($error); ?>
+      </li>
       <? endforeach; ?>
-    </ul>
   <?php endif; ?>
     </ul>
   <form action="" method="post">
     <p>
       <label for="title">学習内容:</label>
-      <input type="text" name="title" id="" value=<?php echo h($post['title']); ?>>
+      <input type="text" name="title" id="" value=<?php echo h($plans['title']); ?>>
       <label for="due_date">期限日:</label>
-      <input type="date" name="due_date" id='' value=<?php echo h($post['due_date']); ?>>
+      <input type="date" name="due_date" id='' value=<?php echo h($plans['due_date']); ?>>
       <input type="submit" value="編集">
     </p>
   </form>
