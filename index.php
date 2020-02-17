@@ -17,26 +17,27 @@ $done_plans = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 //タスク追加
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-$title = $_POST['title'];
-$due_date = $_POST['due_date'];
-//エラーチェック
-$errors = [];
-//バリデーション
-if ($title == '') {
-$errors['title'] = '学習内容を入力してください';
-}
-if ($due_date == '') {
-$errors['due_date'] = '期限を入力してください';
-}
-if (empty($errors)){
-$sql = "insert into plans (title, due_date, created_at, updated_at) values (:title, :due_date, now(, now())";
-$stmt = $dbh->prepare($sql);
-$stmt->bindParam(":title", $title);
-$stmt->bindParam(":due_date", $due_date);
-$stmt->execute();
-}
-header('Location: index.php');
-exit;
+  $title = $_POST['title'];
+  $due_date = $_POST['due_date'];
+  //エラーチェック
+  $errors = [];
+  //バリデーション
+  if ($title == '') {
+    $errors['title'] = '学習内容を入力してください';
+  }
+  if ($due_date == '') {
+    $errors['due_date'] = '期限を入力してください';
+  }
+  if (empty($errors)){
+    $dbh = connectDb();
+    $sql = "insert into plans (title, due_date, created_at, updated_at) values (:title, :due_date, now(), now())";
+    $stmt = $dbh->prepare($sql);
+    $stmt->bindParam(":title", $title);
+    $stmt->bindParam(":due_date", $due_date);
+    $stmt->execute();
+  }
+  header('Location: index.php');
+  exit;
 }
 ?>
 
@@ -58,13 +59,11 @@ exit;
         <input type="submit" value="追加">
       </p>
 
-    <?php if ($errors) : ?>
+    <?php if (count($errors) > 0) : ?>
     <ul class="expired">
-      <?php foreach ($errors as $error) : ?>
-        <li>
-          <?php echo h($error); ?>
-        </li>
-      <? endforeach; ?>
+      <?php foreach ($errors as $key => $value) : ?>
+        <li><?php echo h($value); ?></li>
+      <?php endforeach; ?>
     </ul>
     <?php endif; ?>
     </from>
