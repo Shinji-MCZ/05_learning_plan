@@ -4,7 +4,7 @@ require_once('functions.php');
 
 $dbh = connectDb();
 //未完了
-$sql = "select * from plans where status = 'notyet'";
+$sql = "select * from plans where status = 'notyet' order by due_date ASC";
 $stmt = $dbh->prepare($sql);
 $stmt->execute();
 $notyet_plans = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -35,9 +35,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bindParam(":title", $title);
     $stmt->bindParam(":due_date", $due_date);
     $stmt->execute();
+    header('Location: index.php');
+    exit;
   }
-  header('Location: index.php');
-  exit;
 }
 ?>
 
@@ -58,9 +58,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         期限日: <input type="date" name='due_date'>
         <input type="submit" value="追加">
       </p>
-
-    <?php if (count($errors) > 0) : ?>
-    <ul class="expired">
+    
+    <?php if ($errors > 0) : ?>
+    <ul style="color:red">
       <?php foreach ($errors as $key => $value) : ?>
         <li><?php echo h($value); ?></li>
       <?php endforeach; ?>
@@ -69,28 +69,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </from>
     
     <h2>未達成</h2>
-      <ul>
-        <?php foreach ($notyet_plans as $plan) : ?>
-        
-        <?php if (date('Y-m-d') >= $plan['due_date']) : ?>
-        <li class="expired">
-        <?php else : ?>
-        <li>
-        <?php endif; ?>
-
-        <a href="done.php?id=<?php echo h($plan['id']) ; ?>">[完了]</a>
-        <a href="edit.php?id=<?php echo h($plan['id']) ; ?>">[編集]</a>
-        <?php echo h($plan['title']) . '･･･完了期限:'; ?>
-        <?php echo h($plan['due_date']); ?>
-        </li>
-        <?php endforeach; ?>
-      </ul><hr>
-
+    <ul>
+    <?php foreach ($notyet_plans as $plan) : ?>
+    
+    <?php if (date('Y-m-d') >= $plan['due_date']) : ?>
+      <li class="expired">
+    <?php else : ?>
+      <li>
+    <?php endif; ?>
+    <a href="done.php?id=<?php echo h($plan['id']) ; ?>">[完了]</a>
+    <a href="edit.php?id=<?php echo h($plan['id']) ; ?>">[編集]</a>
+    <?php echo h($plan['title']) . '･･･完了期限:'; ?>
+    <?php echo h(date('Y/m/d', strtotime($plan['due_date']))); ?>
+      </li>
+    <?php endforeach; ?>
+    </ul>
+    <hr>
     <h2>達成済み</h2>
     <ul>
     <?php foreach ($done_plans as $plan) : ?>
       <li>
-      <?php echo h($plan['title']); ?>
+    <?php echo h($plan['title']); ?>
       </li>
     <?php endforeach; ?>
     </ul>
