@@ -3,6 +3,8 @@
 require_once('config.php');
 require_once('functions.php');
 
+$errors = array();
+
 $id = $_GET['id'];
 
 $dbh = connectDb();
@@ -17,23 +19,25 @@ $plans = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-$title = $_POST['title'];
-$due_date = $_POST['due_date'];
-$errors = [];
-if ($title === $plans['title']) {
-$errors['title'] = '学習内容が変更されてません';
-}
-if ($due_date === $plans['due_date']) {
-$errors['due_date'] = '期限が変更されてません';
-}
-if (empty($errors)){
-$sql = "update plans set title = :title, " . "due_date = :due_date where id = :id";
-$stmt = $dbh->prepare($sql);
-$stmt->bindParam(":title", $title);
-$stmt->bindParam(":due_date", $due_date);
-$stmt->bindParam(":id", $id);
-$stmt->execute();
-}
+  $title = $_POST['title'];
+  $due_date = $_POST['due_date'];
+
+  if ($title === $plans['title']) {
+    $errors['title'] = '学習内容が変更されてません';
+  }
+  if ($due_date === $plans['due_date']) {
+    $errors['due_date'] = '期限が変更されてません';
+  }
+  if (empty($errors)){
+    $sql = "update plans set title = :title, " . "due_date = :due_date where id = :id";
+    $stmt = $dbh->prepare($sql);
+    $stmt->bindParam(":title", $title);
+    $stmt->bindParam(":due_date", $due_date);
+    $stmt->bindParam(":id", $id);
+    $stmt->execute();
+    header('Location: index.php');
+    exit;
+  }
 }
 ?>
 <!DOCTYPE html>
@@ -47,8 +51,8 @@ $stmt->execute();
 </head>
 <body>
   <h1>編集</h1>
-  <?php if ($errors) : ?>
-    <ul class="expired">
+  <?php if (count($errors) > 0) : ?>
+    <ul style="color:red">
       <?php foreach ($errors as $error) : ?>
       <li>
         <?php echo h($error); ?>

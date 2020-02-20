@@ -2,6 +2,8 @@
 require_once('config.php');
 require_once('functions.php');
 
+$errors = array();
+
 $dbh = connectDb();
 //未完了
 $sql = "select * from plans where status = 'notyet' order by due_date ASC";
@@ -10,7 +12,7 @@ $stmt->execute();
 $notyet_plans = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 //完了
-$sql2 = "select * from plans where status = 'done'";
+$sql2 = "select * from plans where status = 'done' order by due_date DESC";
 $stmt = $dbh->prepare($sql2);
 $stmt->execute();
 $done_plans = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -19,8 +21,7 @@ $done_plans = $stmt->fetchAll(PDO::FETCH_ASSOC);
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $title = $_POST['title'];
   $due_date = $_POST['due_date'];
-  //エラーチェック
-  $errors = [];
+
   //バリデーション
   if ($title == '') {
     $errors['title'] = '学習内容を入力してください';
