@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <input type="submit" value="追加">
       </p>
     
-    <?php if ($errors > 0) : ?>
+    <?php if (count($errors)) : ?>
     <ul style="color:red">
       <?php foreach ($errors as $key => $value) : ?>
         <li><?php echo h($value); ?></li>
@@ -72,25 +72,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <h2>未達成</h2>
     <ul>
     <?php foreach ($notyet_plans as $plan) : ?>
-    
     <?php if (date('Y-m-d') >= $plan['due_date']) : ?>
       <li class="expired">
-    <?php else : ?>
+        <?php else : ?>
       <li>
     <?php endif; ?>
-    <a href="done.php?id=<?php echo h($plan['id']) ; ?>">[完了]</a>
-    <a href="edit.php?id=<?php echo h($plan['id']) ; ?>">[編集]</a>
-    <?php echo h($plan['title']) . '･･･完了期限:'; ?>
-    <?php echo h(date('Y/m/d', strtotime($plan['due_date']))); ?>
+        <a href="done.php?id=<?php echo h($plan['id']) ; ?>">[完了]</a>
+        <a href="edit.php?id=<?php echo h($plan['id']) ; ?>">[編集]</a>
+        <?php echo h($plan['title']) . '･･･完了期限:'; ?>
+        <?php echo h(date('Y/m/d', strtotime($plan['due_date']))); ?>
       </li>
     <?php endforeach; ?>
-    </ul>
-    <hr>
+    </ul><hr>
     <h2>達成済み</h2>
     <ul>
     <?php foreach ($done_plans as $plan) : ?>
       <li>
-    <?php echo h($plan['title']); ?>
+        <?php echo h($plan['title']); ?>
       </li>
     <?php endforeach; ?>
     </ul>

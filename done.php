@@ -7,8 +7,6 @@ $dbh = connectDb();
 
 $id = $_GET['id'];
 
-$dbh = connectDb();
-
 $sql = "update plans set status = 'done' where id = :id";
 
 $stmt = $dbh->prepare($sql);
