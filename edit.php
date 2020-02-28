@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $errors['due_date'] = '期限が変更されてません';
   }
   if (empty($errors)){
-    $sql = "update plans set title = :title, due_date = :due_date, update_at = now() where id = :id";
+    $sql = "update plans set title = :title, due_date = :due_date, created_at = now() where id = :id";
     $stmt = $dbh->prepare($sql);
     $stmt->bindParam(":title", $title);
     $stmt->bindParam(":due_date", $due_date);
