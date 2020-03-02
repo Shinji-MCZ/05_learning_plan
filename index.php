@@ -54,9 +54,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
   <h1>学習管理アプリ</h1>
     <form action="" method="post">
-      <p>
+      <label for="title">
         学習内容: <input type="text" name='title'><br>
+      </laebl>
+      <label for="title">
         期限日: <input type="date" name='due_date'>
+      </laebl>
         <input type="submit" value="追加">
       </p>
     
